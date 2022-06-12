@@ -334,6 +334,7 @@ export default class MoviesDAO {
           }
         }
       ]
+
       return await movies.aggregate(pipeline).next()
     } catch (e) {
       /**
@@ -345,8 +346,14 @@ export default class MoviesDAO {
 
       // TODO Ticket: Error Handling
       // Catch the InvalidId error by string matching, and then handle it.
-      console.error(`Something went wrong in getMovieByID: ${e}`)
-      throw e
+      if ((e.toString()).match("InvalidId")) {
+        return null
+      } else if (e.toString().includes("of 12 bytes or a string of 24")) {
+        return null
+      } else {
+        console.error(`Something went wrong in getMovieByID: ${e}`)
+        throw e
+      }
     }
   }
 }
